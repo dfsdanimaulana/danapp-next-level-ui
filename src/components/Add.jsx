@@ -6,14 +6,14 @@ import { Box } from '@mui/system'
 const SytledModal = styled(Modal)({
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
+  justifyContent: 'center'
 })
 
 const UserBox = styled(Box)({
   display: 'flex',
   alignItems: 'center',
   gap: '10px',
-  marginBottom: '20px',
+  marginBottom: '20px'
 })
 
 const Add = () => {
@@ -26,7 +26,7 @@ const Add = () => {
         sx={{
           position: 'fixed',
           bottom: 20,
-          left: { xs: 'calc(50% - 25px)', md: 30 },
+          left: { xs: 'calc(50% - 25px)', md: 30 }
         }}
       >
         <Fab color="primary" aria-label="add">

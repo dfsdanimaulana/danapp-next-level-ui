@@ -15,21 +15,21 @@ export const userSlice = createSlice({
   initialState: {
     value: null,
     status: 'idle',
-    error: null,
+    error: null
   },
   reducers: {
     login: (state, action) => {
       state.value = {
         ...state.value,
         accessToken: action.payload.accessToken,
-        refreshToken: action.payload.refreshToken,
+        refreshToken: action.payload.refreshToken
       }
     },
     logout: (state) => {
       state.value = null
       state.status = 'idle'
       state.error = null
-    },
+    }
   },
   extraReducers(builder) {
     builder
@@ -40,14 +40,14 @@ export const userSlice = createSlice({
         state.status = 'succeeded'
         state.value = {
           ...action.payload,
-          accessToken: state.value.accessToken,
+          accessToken: state.value.accessToken
         }
       })
       .addCase(fetchUser.rejected, (state, action) => {
         state.status = 'failed'
         state.error = action.error.message
       })
-  },
+  }
 })
 
 export const getUserValue = (state) => state.user.value
