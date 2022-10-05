@@ -1,4 +1,8 @@
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, Navigate } from 'react-router-dom'
+import { Controller, useForm } from 'react-hook-form'
+import { joiResolver } from '@hookform/resolvers/joi'
+import Joi from 'joi'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -10,6 +14,19 @@ import Box from '@mui/material/Box'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
+import InputAdornment from '@mui/material/InputAdornment'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import useAuth from '../hooks/useAuth'
+
+const schema = Joi.object().keys({
+  name: Joi.string().lowercase().trim().min(4).max(20).required(),
+  email: Joi.string()
+    .required()
+    .email({ tlds: { allow: false } }),
+  password: Joi.string().min(8).required(),
+  confirm_password: Joi.equal(Joi.ref('password')).required()
+})
 
 function Copyright(props) {
   return (
@@ -24,14 +41,28 @@ function Copyright(props) {
   )
 }
 
-export default function SignUp() {
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    const data = new FormData(event.currentTarget)
-    console.log({
-      email: data.get('email'),
-      password: data.get('password')
-    })
+export default function Register() {
+  const { user } = useAuth()
+  const [passwordShow, setPasswordShow] = useState(false)
+
+  const {
+    handleSubmit,
+    control,
+    formState: { errors }
+  } = useForm({
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirm_password: ''
+    },
+    resolver: joiResolver(schema)
+  })
+
+  const onSubmit = (data) => console.log(data)
+
+  if (user) {
+    return <Navigate to="/" replace />
   }
 
   return (
@@ -49,36 +80,85 @@ export default function SignUp() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign up
+          DanApp
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="given-name"
-                name="firstName"
-                required
-                fullWidth
-                id="firstName"
-                label="First Name"
-                autoFocus
+            <Grid item xs={12}>
+              <Controller
+                name="name"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    label="Name"
+                    autoFocus
+                    error={!!errors.name}
+                    helperText={errors.name && errors.name?.message}
+                  />
+                )}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField required fullWidth id="lastName" label="Last Name" name="lastName" autoComplete="family-name" />
+            <Grid item xs={12}>
+              <Controller
+                name="email"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    label="Email"
+                    error={!!errors.email}
+                    helperText={errors.email && errors.email?.message}
+                  />
+                )}
+              />
             </Grid>
             <Grid item xs={12}>
-              <TextField required fullWidth id="email" label="Email Address" name="email" autoComplete="email" />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
+              <Controller
                 name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="new-password"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    label="Password"
+                    type={passwordShow ? 'text' : 'password'}
+                    error={!!errors.password}
+                    helperText={errors.password && errors.password?.message}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="start" onClick={() => setPasswordShow((val) => !val)}>
+                          {passwordShow ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                        </InputAdornment>
+                      )
+                    }}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Controller
+                name="confirm_password"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    label="Confirm Password"
+                    type={passwordShow ? 'text' : 'password'}
+                    error={!!errors.confirm_password}
+                    helperText={errors.confirm_password && errors.confirm_password?.message}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="start" onClick={() => setPasswordShow((val) => !val)}>
+                          {passwordShow ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                        </InputAdornment>
+                      )
+                    }}
+                  />
+                )}
               />
             </Grid>
             <Grid item xs={12}>
@@ -89,13 +169,11 @@ export default function SignUp() {
             </Grid>
           </Grid>
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-            Sign Up
+            Register
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link to="/login" variant="body2">
-                Already have an account? Sign in
-              </Link>
+              <Typography component="span">Already have an account?</Typography> <Link to="/login">Login</Link>
             </Grid>
           </Grid>
         </Box>

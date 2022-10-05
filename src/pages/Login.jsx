@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
 import Joi from 'joi'
 import { joiResolver } from '@hookform/resolvers/joi'
@@ -17,6 +17,8 @@ import Container from '@mui/material/Container'
 import InputAdornment from '@mui/material/InputAdornment'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+
+import useAuth from '../hooks/useAuth'
 
 const schema = Joi.object().keys({
   email: Joi.string()
@@ -39,6 +41,7 @@ function Copyright(props) {
 }
 
 export default function Login() {
+  const { user } = useAuth()
   const [passwordShow, setPasswordShow] = useState(false)
 
   const {
@@ -54,6 +57,10 @@ export default function Login() {
   })
 
   const onSubmit = (data) => console.log(data)
+
+  if (user) {
+    return <Navigate to="/" replace />
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -120,14 +127,10 @@ export default function Login() {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link to="#" variant="body2">
-                Forgot password?
-              </Link>
+              <Link to="#">Forgot password?</Link>
             </Grid>
             <Grid item>
-              <Link to="/register" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
+              <Typography component="span">Don't have an account?</Typography> <Link to="/register">Register</Link>
             </Grid>
           </Grid>
         </Box>

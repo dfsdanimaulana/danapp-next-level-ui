@@ -4,6 +4,9 @@ import { ThemeProvider, createTheme } from '@mui/material'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import PageNotFound from './pages/PageNotFound'
+import ProtectedRoute from './components/ProtectedRoute'
+import Dashboard from './pages/Dashboard'
 
 function App() {
   const [mode, setMode] = useState('light')
@@ -18,9 +21,15 @@ function App() {
     <ThemeProvider theme={darkTheme}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home setMode={setMode} mode={mode} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<Home mode={mode} setMode={setMode} />} />
+            <Route path="*" element={<PageNotFound />} />
+          </Route>
+          <Route element={<ProtectedRoute admin />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
