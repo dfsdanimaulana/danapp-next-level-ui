@@ -1,12 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { getUserValue, getUserStatus, getUserError, fetchUser } from '../redux/user'
+import { userLogout } from '../redux/user'
+import { fetchUser, registerUser, userLogin } from '../redux/user/userActions'
 
 export default function useAuth() {
   const dispatch = useDispatch()
 
-  const user = useSelector(getUserValue)
-  const status = useSelector(getUserStatus)
-  const error = useSelector(getUserError)
+  const { user, status, error } = useSelector((state) => state.user)
 
   /**
    * get user data in database by id
@@ -16,5 +15,18 @@ export default function useAuth() {
   const getUser = (id) => {
     dispatch(fetchUser(id))
   }
-  return { user, status, error, getUser }
+
+  const register = (data) => {
+    dispatch(registerUser(data))
+  }
+
+  const login = (data) => {
+    dispatch(userLogin(data))
+  }
+
+  const logout = () => {
+    dispatch(userLogout())
+  }
+
+  return { user, status, error, getUser, register, login, logout }
 }

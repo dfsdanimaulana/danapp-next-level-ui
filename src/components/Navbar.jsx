@@ -1,6 +1,7 @@
 import { Mail, Notifications, Pets } from '@mui/icons-material'
 import { AppBar, Avatar, Badge, Box, InputBase, Menu, MenuItem, styled, Toolbar, Typography } from '@mui/material'
 import React, { useState } from 'react'
+import useAuth from '../hooks/useAuth'
 
 const StyledToolbar = styled(Toolbar)({
   display: 'flex',
@@ -33,6 +34,7 @@ const UserBox = styled(Box)(({ theme }) => ({
 }))
 
 const Navbar = () => {
+  const { logout } = useAuth()
   const [open, setOpen] = useState(false)
   return (
     <AppBar position="sticky">
@@ -81,7 +83,7 @@ const Navbar = () => {
       >
         <MenuItem>Profile</MenuItem>
         <MenuItem>My account</MenuItem>
-        <MenuItem>Logout</MenuItem>
+        <MenuItem onClick={logout}>Logout</MenuItem>
       </Menu>
     </AppBar>
   )

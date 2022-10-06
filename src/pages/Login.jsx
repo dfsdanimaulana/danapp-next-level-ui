@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
-import Joi from 'joi'
 import { joiResolver } from '@hookform/resolvers/joi'
 import Avatar from '@mui/material/Avatar'
-import Button from '@mui/material/Button'
+import LoadingButton from '@mui/lab/LoadingButton'
 import CssBaseline from '@mui/material/CssBaseline'
 import TextField from '@mui/material/TextField'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -17,15 +16,8 @@ import Container from '@mui/material/Container'
 import InputAdornment from '@mui/material/InputAdornment'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
-
 import useAuth from '../hooks/useAuth'
-
-const schema = Joi.object().keys({
-  email: Joi.string()
-    .required()
-    .email({ tlds: { allow: false } }),
-  password: Joi.string().required()
-})
+import { loginSchema } from '../validations'
 
 function Copyright(props) {
   return (
@@ -41,7 +33,7 @@ function Copyright(props) {
 }
 
 export default function Login() {
-  const { user } = useAuth()
+  const { user, status, login } = useAuth()
   const [passwordShow, setPasswordShow] = useState(false)
 
   const {
@@ -53,10 +45,10 @@ export default function Login() {
       email: '',
       password: ''
     },
-    resolver: joiResolver(schema)
+    resolver: joiResolver(loginSchema)
   })
 
-  const onSubmit = (data) => console.log(data)
+  const onSubmit = (data) => login(data)
 
   if (user) {
     return <Navigate to="/" replace />
@@ -122,9 +114,19 @@ export default function Login() {
           />
 
           <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+          {/* <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
             Login
-          </Button>
+          </Button> */}
+          <LoadingButton
+            type="submit"
+            color="info"
+            variant="contained"
+            fullWidth
+            loading={status === 'loading'}
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Login
+          </LoadingButton>
           <Grid container>
             <Grid item xs>
               <Link to="#">Forgot password?</Link>

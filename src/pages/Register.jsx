@@ -2,9 +2,8 @@ import { useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { Controller, useForm } from 'react-hook-form'
 import { joiResolver } from '@hookform/resolvers/joi'
-import Joi from 'joi'
 import Avatar from '@mui/material/Avatar'
-import Button from '@mui/material/Button'
+import LoadingButton from '@mui/lab/LoadingButton'
 import CssBaseline from '@mui/material/CssBaseline'
 import TextField from '@mui/material/TextField'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -18,22 +17,14 @@ import InputAdornment from '@mui/material/InputAdornment'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import useAuth from '../hooks/useAuth'
-
-const schema = Joi.object().keys({
-  name: Joi.string().lowercase().trim().min(4).max(20).required(),
-  email: Joi.string()
-    .required()
-    .email({ tlds: { allow: false } }),
-  password: Joi.string().min(8).required(),
-  confirm_password: Joi.equal(Joi.ref('password')).required()
-})
+import { registerSchema } from '../validations'
 
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" to="https://mui.com/">
-        Your Website
+        DanApp
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -42,7 +33,7 @@ function Copyright(props) {
 }
 
 export default function Register() {
-  const { user } = useAuth()
+  const { user, status, register } = useAuth()
   const [passwordShow, setPasswordShow] = useState(false)
 
   const {
@@ -56,10 +47,13 @@ export default function Register() {
       password: '',
       confirm_password: ''
     },
-    resolver: joiResolver(schema)
+    resolver: joiResolver(registerSchema)
   })
 
-  const onSubmit = (data) => console.log(data)
+  const onSubmit = (formBody) => {
+    const { confirm_password, ...data } = formBody
+    register(data)
+  }
 
   if (user) {
     return <Navigate to="/" replace />
@@ -94,6 +88,7 @@ export default function Register() {
                     fullWidth
                     label="Name"
                     autoFocus
+                    autoComplete="off"
                     error={!!errors.name}
                     helperText={errors.name && errors.name?.message}
                   />
@@ -168,9 +163,19 @@ export default function Register() {
               />
             </Grid>
           </Grid>
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+          {/* <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
             Register
-          </Button>
+          </Button> */}
+          <LoadingButton
+            type="submit"
+            color="info"
+            variant="contained"
+            fullWidth
+            loading={status === 'loading'}
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Register
+          </LoadingButton>
           <Grid container justifyContent="flex-end">
             <Grid item>
               <Typography component="span">Already have an account?</Typography> <Link to="/login">Login</Link>
