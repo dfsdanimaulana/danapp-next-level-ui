@@ -4,8 +4,10 @@ import { useNavigate } from 'react-router-dom'
 import { AccountBox, Article, Group, Home, ModeNight, Person, Settings, Storefront } from '@mui/icons-material'
 import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Switch } from '@mui/material'
 import { toggleMode } from '../redux/theme'
+import useAuth from '../hooks/useAuth'
 
 const Sidebar = () => {
+  const { user } = useAuth()
   const dispatch = useDispatch()
   const navigate = useNavigate()
   return (
@@ -61,7 +63,7 @@ const Sidebar = () => {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton component="span" onClick={() => navigate('/')}>
+            <ListItemButton component="span" onClick={() => navigate(`/${user?.name}`)}>
               <ListItemIcon>
                 <AccountBox />
               </ListItemIcon>

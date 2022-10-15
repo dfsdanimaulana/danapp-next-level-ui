@@ -83,7 +83,7 @@ const UserBox = styled(Box)(({ theme }) => ({
 
 const Navbar = () => {
   const navigate = useNavigate()
-  const { logout } = useAuth()
+  const { logout, user } = useAuth()
   const [open, setOpen] = useState(false)
   return (
     <AppBar position="sticky">
@@ -144,7 +144,7 @@ const Navbar = () => {
           horizontal: 'right'
         }}
       >
-        <MenuItem>Profile</MenuItem>
+        <MenuItem onClick={() => navigate(`/${user?.name}`)}>Profile</MenuItem>
         <MenuItem>My account</MenuItem>
         <MenuItem onClick={logout}>Logout</MenuItem>
       </Menu>

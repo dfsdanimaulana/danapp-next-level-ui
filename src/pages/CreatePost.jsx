@@ -56,7 +56,7 @@ export default function CreatePost() {
           <Stack direction="row" alignItems="center" py={2} mb={3} spacing={2}>
             <Avatar alt="user" />
             <Typography flex={1} component="span">
-              {user.name}
+              {user?.name}
             </Typography>
             <IconButton>
               <MoreVert />
