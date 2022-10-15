@@ -28,5 +28,6 @@ export default function useAuth() {
     dispatch(userLogout())
   }
 
+
   return { user, status, error, getUser, register, login, logout }
 }

@@ -1,14 +1,19 @@
+import React from 'react'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { AccountBox, Article, Group, Home, ModeNight, Person, Settings, Storefront } from '@mui/icons-material'
 import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Switch } from '@mui/material'
-import React from 'react'
+import { toggleMode } from '../redux/theme'
 
-const Sidebar = ({ mode, setMode }) => {
+const Sidebar = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   return (
     <Box flex={1} p={2} sx={{ display: { xs: 'none', sm: 'block' } }}>
       <Box position="fixed">
         <List>
           <ListItem disablePadding>
-            <ListItemButton component="a" href="#home">
+            <ListItemButton component="span" onClick={() => navigate('/')}>
               <ListItemIcon>
                 <Home />
               </ListItemIcon>
@@ -16,7 +21,7 @@ const Sidebar = ({ mode, setMode }) => {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton component="a" href="#simple-list">
+            <ListItemButton component="span" onClick={() => navigate('/')}>
               <ListItemIcon>
                 <Article />
               </ListItemIcon>
@@ -24,7 +29,7 @@ const Sidebar = ({ mode, setMode }) => {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton component="a" href="#simple-list">
+            <ListItemButton component="span" onClick={() => navigate('/')}>
               <ListItemIcon>
                 <Group />
               </ListItemIcon>
@@ -32,7 +37,7 @@ const Sidebar = ({ mode, setMode }) => {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton component="a" href="#simple-list">
+            <ListItemButton component="span" onClick={() => navigate('/')}>
               <ListItemIcon>
                 <Storefront />
               </ListItemIcon>
@@ -40,7 +45,7 @@ const Sidebar = ({ mode, setMode }) => {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton component="a" href="#simple-list">
+            <ListItemButton component="span" onClick={() => navigate('/')}>
               <ListItemIcon>
                 <Person />
               </ListItemIcon>
@@ -48,7 +53,7 @@ const Sidebar = ({ mode, setMode }) => {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton component="a" href="#simple-list">
+            <ListItemButton component="span" onClick={() => navigate('/')}>
               <ListItemIcon>
                 <Settings />
               </ListItemIcon>
@@ -56,7 +61,7 @@ const Sidebar = ({ mode, setMode }) => {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton component="a" href="#simple-list">
+            <ListItemButton component="span" onClick={() => navigate('/')}>
               <ListItemIcon>
                 <AccountBox />
               </ListItemIcon>
@@ -64,11 +69,11 @@ const Sidebar = ({ mode, setMode }) => {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton component="a" href="#simple-list">
+            <ListItemButton component="span">
               <ListItemIcon>
                 <ModeNight />
               </ListItemIcon>
-              <Switch onChange={(e) => setMode(mode === 'light' ? 'dark' : 'light')} />
+              <Switch onChange={() => dispatch(toggleMode())} />
             </ListItemButton>
           </ListItem>
         </List>

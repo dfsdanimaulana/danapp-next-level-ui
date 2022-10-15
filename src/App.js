@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { ThemeProvider, createTheme } from '@mui/material'
 import Home from './pages/Home'
@@ -7,9 +6,11 @@ import Register from './pages/Register'
 import PageNotFound from './pages/PageNotFound'
 import ProtectedRoute from './components/ProtectedRoute'
 import Dashboard from './pages/Dashboard'
+import CreatePost from './pages/CreatePost'
+import { useSelector } from 'react-redux'
 
 function App() {
-  const [mode, setMode] = useState('light')
+  const mode = useSelector((state) => state.theme.mode)
 
   const darkTheme = createTheme({
     palette: {
@@ -24,7 +25,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<Home mode={mode} setMode={setMode} />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/post" element={<CreatePost />} />
             <Route path="*" element={<PageNotFound />} />
           </Route>
           <Route element={<ProtectedRoute admin />}>

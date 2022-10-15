@@ -13,7 +13,7 @@ import {
   MenuItem
 } from '@mui/material'
 
-const Post = () => {
+const PostCard = () => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [isLiked, setIsLiked] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
@@ -93,4 +93,4 @@ const Post = () => {
   )
 }
 
-export default Post
+export default PostCard
