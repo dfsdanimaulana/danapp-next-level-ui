@@ -19,6 +19,11 @@ export const loginSchema = Joi.object().keys({
   password: Joi.string().required().messages(generateMessages('password'))
 })
 
+export const createPostSchema = Joi.object().keys({
+  caption: Joi.string().required().messages(generateMessages('caption')),
+  hashtag: Joi.string().messages(generateMessages('hashtag'))
+})
+
 function generateMessages(name) {
   return {
     'string.base': `${name} should be a type of 'text'`,

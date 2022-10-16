@@ -1,3 +1,6 @@
+import { useRef } from 'react'
+import { useForm, Controller } from 'react-hook-form'
+import { joiResolver } from '@hookform/resolvers/joi'
 import {
   Avatar,
   Box,
@@ -11,28 +14,54 @@ import {
   Tooltip,
   Typography
 } from '@mui/material'
-import { useRef } from 'react'
-import Layout from '../components/Layout'
+import LoadingButton from '@mui/lab/LoadingButton'
 import { MoreVert } from '@mui/icons-material'
-import useAuth from '../hooks/useAuth'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt'
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1'
 import VideoCallIcon from '@mui/icons-material/VideoCall'
+import useAuth from '../hooks/useAuth'
 import useImagePreview from '../hooks/useImagePreview'
+import Layout from '../components/Layout'
+import { createPostSchema } from '../validations'
 
 export default function CreatePost() {
   const { user } = useAuth()
   const inputRef = useRef()
   const { preview, onSelectFile } = useImagePreview()
 
-  const handleFileClick = () => {
-    inputRef.current.click()
+  const {
+    handleSubmit,
+    control,
+    formState: { errors }
+  } = useForm({
+    defaultValues: {
+      caption: '',
+      image: null,
+      hashtag: ''
+    },
+    resolver: joiResolver(createPostSchema)
+  })
+
+  const handleFileChange = (event) => {
+    onSelectFile(event)
+    console.log(event.target.files[0])
+  }
+
+  const onSubmit = (data) => {
+    console.log(data)
   }
 
   return (
     <Layout>
-      <Stack component="form" direction={{ xs: 'column', sm: 'row' }} flex={6} p={3}>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        flex={6}
+        p={3}
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+      >
         <Box mt={5} flex={1} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Card sx={{ maxWidth: 345 }}>
             <CardMedia
@@ -45,8 +74,13 @@ export default function CreatePost() {
               alt="Upload"
             />
             <CardContent sx={{ display: 'flex', justifyContent: 'center' }}>
-              <input ref={inputRef} type="file" hidden onChange={onSelectFile} />
-              <Button variant="contained" color="success" onClick={handleFileClick} startIcon={<AddPhotoAlternateIcon />}>
+              <input ref={inputRef} type="file" hidden onChange={handleFileChange} />
+              <Button
+                variant="contained"
+                color="success"
+                onClick={() => inputRef.current.click()}
+                startIcon={<AddPhotoAlternateIcon />}
+              >
                 Choose File
               </Button>
             </CardContent>
@@ -63,8 +97,25 @@ export default function CreatePost() {
             </IconButton>
           </Stack>
           <Stack spacing={2}>
-            <TextField label="Caption" multiline rows={4} />
-            <TextField label="Hashtag" helperText="Separate by space" />
+            <Controller
+              name="caption"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  multiline
+                  label="Caption"
+                  rows={4}
+                  error={!!errors.caption}
+                  helperText={errors.caption ? errors.caption?.message : ' '}
+                />
+              )}
+            />
+            <Controller
+              name="hashtag"
+              control={control}
+              render={({ field }) => <TextField {...field} fullWidth label="Hashtag" helperText="Separate by space" />}
+            />
           </Stack>
           <Stack direction="row" spacing={1}>
             <Tooltip title="Add location">
@@ -84,9 +135,9 @@ export default function CreatePost() {
             </Tooltip>
           </Stack>
           <Box sx={{ display: 'flex', justifyContent: 'end', m: 3 }}>
-            <Button variant="contained" sx={{ px: 5 }}>
+            <LoadingButton type="submit" color="info" variant="contained" loading={false} sx={{ px: 5 }}>
               Post
-            </Button>
+            </LoadingButton>
           </Box>
         </Box>
       </Stack>
